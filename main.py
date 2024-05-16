@@ -97,7 +97,7 @@ async def main():
     with st.sidebar:
         st.subheader("Your documents")
         file = st.file_uploader(
-            "Upload your Data here  in PDF format and click on 'Process'", accept_multiple_files=True, type=['pdf'])
+            "Upload your Data here  in PDF format and click on 'Process'", accept_multiple_files=False, type=['pdf'])
 
         if st.button("Process"):
             if file is None:

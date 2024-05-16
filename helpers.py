@@ -5,11 +5,11 @@ import streamlit as st
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
+nltk.download('punkt')
+nltk.download('stopwords')
 
 
 def preprocess_text(text):
-    nltk.download('punkt')
-    nltk.download('stopwords')
     text = re.sub(r'[^a-zA-Z\s]', '', text)
     text = text.lower()
     tokens = word_tokenize(text)
@@ -58,7 +58,7 @@ def handle_userinput(user_question):
         return
 
     response = st.session_state.conversation(user_question)
-    st.write(response)
+    # st.write(response)
     
     formatted_response=display_and_format_response(response=response)
     if "chat_history" not in st.session_state:
