@@ -14,7 +14,7 @@ from langchain.embeddings import SentenceTransformerEmbeddings
 from langchain.chains import create_qa_with_sources_chain, RetrievalQA
 from langchain.chains.combine_documents.stuff import StuffDocumentsChain
 from helpers import preprocess_text, handle_userinput, display_chat_history
-
+from langchain_community.embeddings import OpenAIEmbeddings
 
 
 load_dotenv()
@@ -55,7 +55,7 @@ async def preprocess_data(file):
 
 
 def get_vectorstore(pages):
-    embedding_function = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
+    embedding_function = OpenAIEmbeddings()
     db = Chroma.from_documents(pages, embedding_function)
     return db
 
@@ -73,8 +73,9 @@ def get_conversation_chain(db):
             document_prompt=doc_prompt,
     )
     retrieval_qa = RetrievalQA(
-            retriever=db.as_retriever(),
-            combine_documents_chain=final_qa_chain
+            retriever=db.as_retriever(search_type="similarity", search_kwargs={"k":2}),
+            combine_documents_chain=final_qa_chain,
+            return_source_documents=True
         )
     
     return retrieval_qa

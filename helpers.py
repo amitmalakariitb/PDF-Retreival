@@ -21,6 +21,7 @@ def preprocess_text(text):
 
 def display_and_format_response(response):
     result=response["result"]
+    source_documents=response["source_documents"]
     try:
         result_dict = json.loads(result)
     except json.JSONDecodeError:
@@ -33,20 +34,19 @@ def display_and_format_response(response):
     else:
         st.warning("No answer available.")
 
-    if "sources" in result_dict:
-        sources = result_dict["sources"]
-        if sources:
-            st.write("Sources:")
-            for idx, source in enumerate(sources, start=1):
-                st.write(f"{idx}. {source}")
+    for doc in source_documents:
+        if doc:
+            metadata=doc.metadata
+            page_number=metadata["page"]
+            st.write("page_number:",page_number)
+            
         else:
             st.warning("No sources available.")
-    else:
-        st.warning("No sources available.")
+
 
     formatted_response = {
         "answer": answer,
-        "sources": sources
+        "source_documents": page_number
     }
     
     return formatted_response
